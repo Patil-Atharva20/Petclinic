@@ -41,20 +41,20 @@ pipeline {
 
        stage('building a docker image') {
             steps {
-                sh "docker build -t deepak8934/petapp:${BUILD_NUMBER} ."
+                sh "docker build -t atharvapati/petapp:${BUILD_NUMBER} ."
             }
         }
 
        stage("TRIVY"){
             steps{
-                sh "trivy image  deepak8934/petapp:${BUILD_NUMBER} --scanners vuln > trivyimage.txt" 
+                sh "trivy image  atharvapati/petapp:${BUILD_NUMBER} --scanners vuln > trivyimage.txt" 
             }
         }
 
         stage('docker image push') {
             steps {
                 withDockerRegistry(credentialsId: 'dockercred', url: '') {
-                    sh "docker push deepak8934/petapp:${BUILD_NUMBER}"
+                    sh "docker push atharvapati/petapp:${BUILD_NUMBER}"
                 }
             }
         }
