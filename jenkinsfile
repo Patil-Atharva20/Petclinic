@@ -5,18 +5,7 @@ pipeline {
         jfrog 'jfrog-cli'
       }
 
-    options {
-        skipDefaultCheckout(true)
-    }
-
     stages {
-        stage('Clean workspace and checkout') {
-            steps {
-                deleteDir()
-                checkout scm
-            }
-        }
-
         stage('snyk scan') {
             steps {
                 snykSecurity(
@@ -32,7 +21,7 @@ pipeline {
             steps {
               // jf 'mvn-config --petclinic_artifact-libs-release --petclinic_artifact-libs-snapshot --petclinic_artifact-libs-release-local --petclinic_artifact-libs-snapshot-local'
 
-
+                 sh 'rm -f all-vulnerabilities.json'
                  sh './mvnw clean package -DskipTests=true'
             }
         }
