@@ -5,7 +5,18 @@ pipeline {
         jfrog 'jfrog-cli'
       }
 
+    options {
+        skipDefaultCheckout(true)
+    }
+
     stages {
+        stage('Clean workspace and checkout') {
+            steps {
+                deleteDir()
+                checkout scm
+            }
+        }
+
         stage('snyk scan') {
             steps {
                 snykSecurity(
