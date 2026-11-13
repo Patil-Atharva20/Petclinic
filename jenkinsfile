@@ -13,7 +13,6 @@ pipeline {
                     snykTokenId: 'snyk_api_token',
                     monitorProjectOnBuild: false,
                     failOnIssues: false,  // Use boolean for failOnIssues
-                    additionalArguments: '--json-file-output=all-vulnerabilities.json'
                 )
             }
         }
