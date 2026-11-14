@@ -50,7 +50,7 @@ pipeline {
 
        stage('TRIVY FS SCAN') {
             steps {
-                sh "trivy fs . > trivyfs.txt"
+                sh 'PATH=/var/jenkins_home/.local/bin:$PATH trivy fs . > trivyfs.txt'
             }
         }
 
@@ -62,7 +62,7 @@ pipeline {
 
        stage("TRIVY"){
             steps{
-                sh "trivy image  atharvapati/petapp:${BUILD_NUMBER} --scanners vuln > trivyimage.txt" 
+                sh 'PATH=/var/jenkins_home/.local/bin:$PATH trivy image atharvapati/petapp:$BUILD_NUMBER --scanners vuln > trivyimage.txt'
             }
         }
 
