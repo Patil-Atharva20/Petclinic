@@ -10,8 +10,8 @@
   <distributionManagement>
     <snapshotRepository>
         <id>snapshots</id>
-        <name>a0mhlxtoyc29l-artifactory-primary-0-snapshots</name>
-        <url>https://cncf.jfrog.io/artifactory/maven-remote-libs-snapshot-local</url>
+        <name>jf-libs-snapshot-local</name>
+        <url>https://trialuy6im7.jfrog.io/artifactory/jf-libs-snapshot-local</url>
     </snapshotRepository>
   </distributionManagement>
 
