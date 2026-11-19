@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: atharvapati/petapp
+  pullPolicy: IfNotPresent
+  # Default to the currently deployed image. Jenkins overrides this with each build number.
+  tag: "25"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi

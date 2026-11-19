@@ -37,6 +37,14 @@ There is no `Dockerfile` in this project. You can build a container image (if yo
 ./mvnw spring-boot:build-image
 ```
 
+## DevSecOps pipeline in this repository
+
+The Jenkins pipeline in `jenkinsfile` checks out the `master` branch, runs Snyk and Trivy scans, packages the application with Maven, builds and pushes a Docker image tagged with the Jenkins build number, publishes build information and the JAR to JFrog, then deploys that image with the Helm chart in `helm/petclinic`.
+
+For the deployment stage, Jenkins needs a **Secret file** credential with ID `petclinic-kubeconfig`. The kubeconfig must point to the intended Kubernetes cluster and its API server address must be reachable from inside the Jenkins container. The deployment identity should have permission only in the `default` namespace. The pipeline downloads pinned `kubectl` and Helm clients and waits for the PetClinic rollout to finish.
+
+This is a learning setup: the Maven command currently skips tests, Snyk is configured not to fail the build on findings, and Trivy is run without a vulnerability threshold. A green build therefore means the configured steps completed; it does not mean the scans found no issues.
+
 ## In case you find a bug/suggested improvement for Spring Petclinic
 
 Our issue tracker is available [here](https://github.com/spring-projects/spring-petclinic/issues).

@@ -89,6 +89,47 @@ pipeline {
             }
         }
 
+        stage('Install Kubernetes tools') {
+            steps {
+                sh '''
+                    set -eu
+                    TOOLS="$WORKSPACE/.pipeline-tools"
+                    mkdir -p "$TOOLS"
+
+                    curl -fsSLo "$TOOLS/kubectl" https://dl.k8s.io/release/v1.35.1/bin/linux/amd64/kubectl
+                    curl -fsSLo "$TOOLS/kubectl.sha256" https://dl.k8s.io/release/v1.35.1/bin/linux/amd64/kubectl.sha256
+                    echo "$(cat "$TOOLS/kubectl.sha256")  $TOOLS/kubectl" | sha256sum --check -
+                    chmod 0755 "$TOOLS/kubectl"
+
+                    curl -fsSLo "$TOOLS/helm.tar.gz" https://get.helm.sh/helm-v4.3.2-linux-amd64.tar.gz
+                    echo "d1c0278d46beab79582d7e50f5b3dc206944ba8e577cde618513fd07daa53983  $TOOLS/helm.tar.gz" | sha256sum --check -
+                    tar -xzf "$TOOLS/helm.tar.gz" -C "$TOOLS" linux-amd64/helm
+                    mv "$TOOLS/linux-amd64/helm" "$TOOLS/helm"
+                    chmod 0755 "$TOOLS/helm"
+                    "$TOOLS/kubectl" version --client
+                    "$TOOLS/helm" version --short
+                '''
+            }
+        }
+
+        stage('Deploy PetClinic to Kubernetes') {
+            steps {
+                withCredentials([file(credentialsId: 'petclinic-kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh '''
+                        set -eu
+                        export PATH="$WORKSPACE/.pipeline-tools:$PATH"
+                        kubectl version --request-timeout=10s
+                        helm upgrade --install petclinic ./helm/petclinic \\
+                            --namespace default \\
+                            --set image.tag="${BUILD_NUMBER}" \\
+                            --wait --timeout 5m
+                        kubectl rollout status deployment/petclinic-petclinic \\
+                            --namespace default --timeout=5m
+                    '''
+                }
+            }
+        }
+
 
      
 
